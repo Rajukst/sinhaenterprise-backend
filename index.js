@@ -28,8 +28,8 @@ const verifyJWT = (req, res, next) => {
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.yyhry.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.yyhry.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri=`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.woavxnt.mongodb.net/?retryWrites=true&w=majority`
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -78,7 +78,7 @@ async function run() {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
-    app.delete('/users/:id', async(req, res)=>{
+    app.delete('/users/:id', verifyJWT, verifyAdmin, async(req, res)=>{
       const id= req.params.id;
       const query= {_id: new ObjectId(id)}
       const result= await usersCollection.deleteOne(query)
@@ -113,7 +113,7 @@ async function run() {
       res.send(result);
     })
 
-    app.patch('/users/admin/:id', async (req, res) => {
+    app.patch('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       console.log(id);
       const filter = { _id: new ObjectId(id) };
@@ -141,7 +141,7 @@ async function run() {
       console.log(getData);
     });
     // deleting single grahok data
-    app.delete('/detaCollection/:id', async(req, res)=>{
+    app.delete('/detaCollection/:id',verifyJWT, verifyAdmin, async(req, res)=>{
       const id= req.params.id;
       const query= {_id: new ObjectId(id)}
       const result= await grahokCollection.deleteOne(query)
@@ -178,7 +178,8 @@ async function run() {
       guranterAddress: updateUser.guranterAddress,
       guranterMobile: updateUser.guranterMobile,
       userSerialNo: updateUser.userSerialNo,
-      nid: updateUser.updatedUserNid,
+      nid: updateUser.nid,
+      fieldofficername: updateUser.fieldofficername
     }
 }
 const result = await grahokCollection.updateOne(filter, updatedDoc, options)
@@ -206,7 +207,7 @@ app.post("/payment", async(req, res)=>{
   console.log("getting a User", addPayment);
   res.json(addPayment);
 })
-app.get("/paymentData", async (req, res) => {
+app.get("/paymentData",  async (req, res) => {
   const cursor = paymentList.find({});
   const getPaymentData = await cursor.toArray();
   res.json(getPaymentData);
