@@ -78,7 +78,12 @@ async function run() {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
-
+    app.delete('/users/:id', async(req, res)=>{
+      const id= req.params.id;
+      const query= {_id: new ObjectId(id)}
+      const result= await usersCollection.deleteOne(query)
+      res.json(result)
+    })
     app.post('/users', async (req, res) => {
       const user = req.body;
       const query = { email: user.email }
@@ -135,6 +140,49 @@ async function run() {
       res.json(getData);
       console.log(getData);
     });
+    // deleting single grahok data
+    app.delete('/detaCollection/:id', async(req, res)=>{
+      const id= req.params.id;
+      const query= {_id: new ObjectId(id)}
+      const result= await grahokCollection.deleteOne(query)
+      res.json(result)
+    })
+    // updating all grahok data
+
+    app.put("/detaCollection/:id", async(req, res)=>{
+  const id= req.params.id;
+  const updateUser= req.body;
+  const filter = { _id : new ObjectId(id) }
+  const options = { upsert: true };
+  const updatedDoc = {
+    $set: {
+      name:updateUser.name,
+      fathersName: updateUser.fathersName,
+      mothersName: updateUser.mothersName,
+      presentAddress: updateUser.presentAddress,
+      parmanentAddress: updateUser.parmanentAddress,
+      mobileNumber: updateUser.mobileNumber,
+      profession: updateUser.profession,
+      dateOfBirth: updateUser.dateOfBirth,
+      age: updateUser.age,
+      productName: updateUser.productName,
+      productDetails: updateUser.productDetails,
+      sellPrice: updateUser.sellPrice,
+      primaryDeposit: updateUser.primaryDeposit,
+      purchaseDate: updateUser.purchaseDate,
+      lastDateOfPayment: updateUser.lastDateOfPayment,
+      installmentType: updateUser.installmentType,
+      pastProductTake: updateUser.pastProductTake,
+      ifPaidRegular: updateUser.ifPaidRegular,
+      guranterName: updateUser.guranterName,
+      guranterAddress: updateUser.guranterAddress,
+      guranterMobile: updateUser.guranterMobile,
+      userSerialNo: updateUser.userSerialNo,
+    }
+}
+const result = await grahokCollection.updateOne(filter, updatedDoc, options)
+res.json(result)
+})
 // getting results of single grahok data
     app.get("/detaCollection/:id", async(req, res)=>{
       const productId= req.params.id;
