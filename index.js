@@ -178,6 +178,7 @@ async function run() {
       guranterAddress: updateUser.guranterAddress,
       guranterMobile: updateUser.guranterMobile,
       userSerialNo: updateUser.userSerialNo,
+      nid: updateUser.updatedUserNid,
     }
 }
 const result = await grahokCollection.updateOne(filter, updatedDoc, options)
