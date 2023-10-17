@@ -138,7 +138,7 @@ async function run() {
       const cursor = grahokCollection.find({});
       const getData = await cursor.toArray();
       res.json(getData);
-      console.log(getData);
+      // console.log(getData);
     });
     // deleting single grahok data
     app.delete('/detaCollection/:id', async(req, res)=>{
@@ -190,7 +190,7 @@ res.json(result)
       const productId= req.params.id;
       const query = {_id: new ObjectId(productId)};
       const getSingleProduct= await grahokCollection.findOne(query);
-      console.log("getting a single product", getSingleProduct);
+      // console.log("getting a single product", getSingleProduct);
       res.send(getSingleProduct);
     })
 // grahok payment data 
@@ -198,20 +198,20 @@ app.get("/calculation/:id", async(req, res)=>{
   const productId= req.params.id;
   const query = {_id: new ObjectId(productId)};
   const getCount= await grahokCollection.findOne(query);
-  console.log("getting a single product", getCount);
+  // console.log("getting a single product", getCount);
   res.send(getCount);
 })
 app.post("/payment", async(req, res)=>{
   const add = req.body;
   const addPayment = await paymentList.insertOne(add);
-  console.log("getting a User", addPayment);
+  // console.log("getting a User", addPayment);
   res.json(addPayment);
 })
 app.get("/paymentData",  async (req, res) => {
   const cursor = paymentList.find({});
   const getPaymentData = await cursor.toArray();
   res.json(getPaymentData);
-  console.log(getPaymentData);
+  // console.log(getPaymentData);
 });
 
 app.put('/paymentData/:id',  async (req, res) => {
@@ -231,7 +231,7 @@ app.put('/paymentData/:id',  async (req, res) => {
   }
   const result = await grahokCollection.updateOne(filter, updatedDoc, options);
   res.send(result);
-  console.log(result)
+  // console.log(result)
 });
 app.put('/monthlypaymentData/:id',  async (req, res) => {
   const today = new Date();
@@ -250,7 +250,7 @@ app.put('/monthlypaymentData/:id',  async (req, res) => {
   }
   const result = await grahokCollection.updateOne(filter, updatedDoc, options);
   res.send(result);
-  console.log(result)
+  // console.log(result)
 });
 
 app.get("/todaysPayment/:date", async (req, res) => {
