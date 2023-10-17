@@ -141,7 +141,7 @@ async function run() {
       console.log(getData);
     });
     // deleting single grahok data
-    app.delete('/detaCollection/:id',verifyJWT, verifyAdmin, async(req, res)=>{
+    app.delete('/detaCollection/:id', async(req, res)=>{
       const id= req.params.id;
       const query= {_id: new ObjectId(id)}
       const result= await grahokCollection.deleteOne(query)
