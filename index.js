@@ -269,6 +269,26 @@ app.get("/allPayment", async (req, res) => {
   res.send(getPayment);
 });
 
+app.delete('/detaCollectionallPayment/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+
+    // Use your MongoDB collection (grahokCollection) to delete the payment
+    const result = await paymentList.deleteOne(query);
+
+    if (result.deletedCount === 1) {
+      // Payment deleted successfully
+      res.status(200).json({ message: 'Payment deleted successfully' });
+    } else {
+      // Payment not found
+      res.status(404).json({ error: 'Payment not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting payment:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the payment' });
+  }
+});
     /**
      * ---------------
      * BANGLA SYSTEM(second best solution)
