@@ -74,11 +74,11 @@ async function run() {
     */
 
     // users related apis
-    app.get('/users', verifyJWT, async (req, res) => {
+    app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
-    app.delete('/users/:id', verifyJWT, async(req, res)=>{
+    app.delete('/users/:id', verifyJWT,verifyAdmin, async(req, res)=>{
       const id= req.params.id;
       const query= {_id: new ObjectId(id)}
       const result= await usersCollection.deleteOne(query)
