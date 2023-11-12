@@ -47,6 +47,7 @@ async function run() {
     const usersCollection = client.db("sinha-enterprise").collection("users");
     const grahokCollection = client.db("sinha-enterprise").collection("allClients");
     const paymentList = client.db("sinha-enterprise").collection("allPayments");
+    const cashPaymentList = client.db("sinha-enterprise").collection("cashPaymentList");
 
 
     app.post('/jwt', (req, res) => {
@@ -201,6 +202,94 @@ app.get("/calculation/:id", async(req, res)=>{
   // console.log("getting a single product", getCount);
   res.send(getCount);
 })
+// cash payment data starting now
+app.post("/cashpayment", async(req, res)=>{
+  const add = req.body;
+  const addPayment = await cashPaymentList.insertOne(add);
+  // console.log("getting a User", addPayment);
+  res.json(addPayment);
+})
+app.get("/cashpaymentData",  async (req, res) => {
+  const cursor = cashPaymentList.find({});
+  const getPaymentData = await cursor.toArray();
+  res.json(getPaymentData);
+  // console.log(getPaymentData);
+});
+app.put('/cashpaymentData/:id',  async (req, res) => {
+  const today = new Date();
+  const nextPayment = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+}).replace(/\//g, '-');
+  const id= req.params.id;
+  const filter = { _id : new ObjectId(id) }
+  const options = { upsert: true };
+  const updatedDoc = {
+      $set: {
+          updateDate: nextPayment
+      }
+  }
+  const result = await grahokCollection.updateOne(filter, updatedDoc, options);
+  res.send(result);
+  // console.log(result)
+});
+app.put('/cashmonthlypaymentData/:id',  async (req, res) => {
+  const today = new Date();
+  const nextPayment = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+}).replace(/\//g, '-');
+  const id= req.params.id;
+  const filter = { _id : new ObjectId(id) }
+  const options = { upsert: true };
+  const updatedDoc = {
+      $set: {
+          updateDate: nextPayment
+      }
+  }
+  const result = await grahokCollection.updateOne(filter, updatedDoc, options);
+  res.send(result);
+  // console.log(result)
+});
+app.get("/cashtodaysPayment/:date", async (req, res) => {
+  const getDate= `${req.params.date}`
+  const query ={updateDate : getDate} 
+  const result = await grahokCollection.find(query).toArray()
+  // console.log(getDate)
+  res.send(result)
+  // console.log(getDate)
+  })
+  app.get("/cashallPayment", async (req, res) => {
+    const id = req.query.id;
+    const query = {id : id };
+    const getPayment = await cashPaymentList.find(query).toArray();
+    res.send(getPayment);
+  });
+  app.delete('/cashdetaCollectionallPayment/:id', async (req, res) => {
+    try {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+  
+      // Use your MongoDB collection (grahokCollection) to delete the payment
+      const result = await cashPaymentList.deleteOne(query);
+  
+      if (result.deletedCount === 1) {
+        // Payment deleted successfully
+        res.status(200).json({ message: 'Payment deleted successfully' });
+      } else {
+        // Payment not found
+        res.status(404).json({ error: 'Payment not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting payment:', error);
+      res.status(500).json({ error: 'An error occurred while deleting the payment' });
+    }
+  });
+// cash collection end here
+
+// product payment data starting now
 app.post("/payment", async(req, res)=>{
   const add = req.body;
   const addPayment = await paymentList.insertOne(add);
@@ -289,6 +378,8 @@ app.delete('/detaCollectionallPayment/:id', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while deleting the payment' });
   }
 });
+// product data end here
+
     /**
      * ---------------
      * BANGLA SYSTEM(second best solution)
