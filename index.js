@@ -48,6 +48,7 @@ async function run() {
     const grahokCollection = client.db("sinha-enterprise").collection("allClients");
     const paymentList = client.db("sinha-enterprise").collection("allPayments");
     const cashPaymentList = client.db("sinha-enterprise").collection("cashPaymentList");
+    const dailyPhotoCollection = client.db("sinha-enterprise").collection("dailyPhotoCollection");
 
 
     app.post('/jwt', (req, res) => {
@@ -381,6 +382,26 @@ app.delete('/detaCollectionallPayment/:id', async (req, res) => {
 });
 // product data end here
 
+// daily kormi photo upload start here
+app.post('/userphoto', async (req, res) => {
+  const getData= req.body;
+  const result = await dailyPhotoCollection.insertOne(getData)
+  res.send(result);
+})
+// getting results of posting all grahok data
+app.get("/userphoto", async (req, res) => {
+  const cursor = dailyPhotoCollection.find({});
+  const getData = await cursor.toArray();
+  res.json(getData);
+  // console.log(getData);
+});
+// deleting single grahok data
+app.delete('/userphoto/:id', async(req, res)=>{
+  const id= req.params.id;
+  const query= {_id: new ObjectId(id)}
+  const result= await dailyPhotoCollection.deleteOne(query)
+  res.json(result)
+})
     /**
      * ---------------
      * BANGLA SYSTEM(second best solution)
