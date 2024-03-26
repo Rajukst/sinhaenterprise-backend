@@ -49,6 +49,7 @@ async function run() {
     const paymentList = client.db("sinha-enterprise").collection("allPayments");
     const cashPaymentList = client.db("sinha-enterprise").collection("cashPaymentList");
     const dailyPhotoCollection = client.db("sinha-enterprise").collection("dailyPhotoCollection");
+    const groupCollection = client.db("sinha-enterprise").collection("groupCollection");
 
 
     app.post('/jwt', (req, res) => {
@@ -130,6 +131,23 @@ async function run() {
 
     })
     // grahok data post request
+    app.post('/groups', async (req, res) => {
+      const getData= req.body;
+      const result = await groupCollection.insertOne(getData)
+      res.send(result);
+    })
+    app.get("/groups", async (req, res) => {
+      const cursor = groupCollection.find({});
+      const getData = await cursor.toArray();
+      res.json(getData);
+      // console.log(getData);
+    });
+    app.delete('/groups/:id', async(req, res)=>{
+      const id= req.params.id;
+      const query= {_id: new ObjectId(id)}
+      const result= await groupCollection.deleteOne(query)
+      res.json(result)
+    })
     app.post('/clientData', async (req, res) => {
       const getData= req.body;
       const result = await grahokCollection.insertOne(getData)
