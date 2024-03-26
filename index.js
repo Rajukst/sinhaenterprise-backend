@@ -201,9 +201,11 @@ async function run() {
       nid: updateUser.nid,
       fieldofficername: updateUser.fieldofficername,
       customerType: updateUser.customerType,
+      groupName: updateUser.groupName,
     }
 }
 const result = await grahokCollection.updateOne(filter, updatedDoc, options)
+console.log(result)
 res.json(result)
 })
 // getting results of single grahok data
